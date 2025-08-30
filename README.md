@@ -99,7 +99,7 @@ Author: Shiyao Gu; Jierui Li
 
 - **General PDE form**
   
-  $- \epsilon\, u''(x) + b(x)\, u'(x) + c(x)\, u(x) = f(x)$
+  $- \epsilon\, u''(x) + b(x)\, u'(x) + c(x) u(x) = f(x)$
   
 
 - **Coefficient stubs** — provide your problem-specific definitions:
