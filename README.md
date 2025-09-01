@@ -115,3 +115,58 @@ Author: Shiyao Gu; Jierui Li
   def exact_solution(x_np, eps):
       # return a NumPy array with u(x) for plotting / error metrics
   ```
+
+  ---
+
+- **Example Case 2:** 
+  ```python
+  def b_fun(x): return torch.ones_like(x)
+  def c_fun(x): return torch.zeros_like(x)
+  def f_fun(x): return torch.exp(x)
+
+  def exact_solution(x_np, eps):
+      import numpy as np
+      x = np.asarray(x_np, dtype=np.float64)
+      a = 1.0/eps
+
+      # stable ratio R(x) in [0,1]
+      # R(x) = (e^{a x}-1)/(e^{a}-1) = e^{a(x-1)} * (1 - e^{-a x})/(1 - e^{-a})
+      exp_neg_a = np.exp(-a)
+      numerator = np.exp(a*(x-1.0)) * (1.0 - np.exp(-a*x))
+      denominator = 1.0 - exp_neg_a
+      R = numerator / denominator
+
+      # compact/stable closed form:
+      # u(x) = [ e^{x} - ε + (ε - e) * R(x) ] / (1 - ε)
+      u = (np.exp(x) - eps + (eps - np.e) * R) / (1.0 - eps)
+      return u.astype(np.float64)
+    
+
+
+  LAYER_SIDE = 'left'; BC_LEFT = ('dirichlet', 1.0); BC_RIGHT = ('dirichlet', 0.0)
+  EPS_LIST = [5e-2, 1e-2, 5e-3, 1e-3]
+  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
+
+  ```
+
+- **Example Case 3:** 
+  ```python
+  # PDE:  ε y'' + y' + 2e^{-x} = 0   ==>  -ε y'' - y' - 2e^{-x} = 0
+  def b_fun(x): return -torch.ones_like(x)        # b = -1
+  def c_fun(x): return torch.zeros_like(x)        # c = 0
+  def f_fun(x): return 2.0 * torch.exp(-x)        # f = 2 e^{-x}
+
+  def exact_solution(x_np, eps):
+      x = np.asarray(x_np, dtype=np.float64)
+      return 2.0*np.exp(-x) - 2.0*eps*np.exp(-x/eps)
+
+
+  LAYER_SIDE = 'left'
+
+  BC_LEFT  = ('neumann', 0.0)
+  BC_RIGHT = ('dirichlet', float(2.0*np.exp(-1.0)))
+
+
+  EPS_LIST = [5e-4, 1e-4, 5e-5, 1e-5]
+  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
+  ```
