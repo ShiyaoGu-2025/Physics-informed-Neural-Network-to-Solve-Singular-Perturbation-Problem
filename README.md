@@ -317,4 +317,62 @@ Author: Shiyao Gu; Jierui Li
   EPS_LIST = [5e-4, 1e-4, 5e-5, 1e-5]
   train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
   ```
+
+- **Example Case 7:** 
+  ```python
+  # PDE:  -ε u'' + u' = e^{-x} 
+  def b_fun(x): return torch.ones_like(x)
+  def c_fun(x): return torch.zeros_like(x)
+  def f_fun(x): return torch.exp(-x)
+
+  def exact_solution(x_np, eps):
+      """
+      Exact solution for:
+          -eps*u'' + u' = k*exp(x),  u(0)=1, u(1)=0.
+      Numerically stable (uses only negative exponentials).
+      """
+      k=1.0
+      x = np.asarray(x_np, dtype=np.float64)
+      a = 1.0/eps
+      # Stable ratio R(x) = (e^{ax}-1)/(e^{a}-1)
+      exp_neg_a = np.exp(-a)
+      numerator   = np.exp(a*(x-1.0)) * (1.0 - np.exp(-a*x))
+      denominator = 1.0 - exp_neg_a
+      R = numerator / denominator
+      # Closed form
+      num = k*np.exp(x) - eps + (-(1.0 - eps) + k*(1.0 - np.e)) * R
+      u = num / (1.0 - eps)
+      return u.astype(np.float64)
+
+  # Example B: left boundary layer
+  LAYER_SIDE = 'right'; BC_LEFT = ('dirichlet', 1.0); BC_RIGHT = ('dirichlet', 0.0)
+  EPS_LIST = [5e-2, 1e-2, 5e-3, 1e-3]
+  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
+  ```
   
+- **Example Case 8:** 
+  ```python
+   # PDE:  -ε u'' + u' = 2e^{-x} 
+  def b_fun(x): return torch.ones_like(x)
+  def c_fun(x): return torch.zeros_like(x)
+  def f_fun(x): return 2.0 * torch.exp(-x)
+
+  def exact_solution(x_np, eps):
+      """
+      Exact for: -eps*u'' + u' = 2*exp(-x),  u(0)=1, u(1)=0
+      Numerically stable (only negative exponentials).
+      """
+      x = np.asarray(x_np, dtype=np.float64)
+      a = 1.0/eps
+      # stable R(x)
+      R = np.exp((x-1.0)*a) * (1.0 - np.exp(-a*x)) / (1.0 - np.exp(-a))
+      coef = 2.0/(1.0 + eps)
+      u = (1.0 - R) * (1.0 + coef) + R * (coef * np.exp(-1.0)) - coef * np.exp(-x)
+      return u.astype(np.float64)
+
+  # Example B: left boundary layer
+  LAYER_SIDE = 'right'; BC_LEFT = ('dirichlet', 1.0); BC_RIGHT = ('dirichlet', 0.0)
+  EPS_LIST = [5e-2, 1e-2, 5e-3, 1e-3]
+  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
+  ```
+
