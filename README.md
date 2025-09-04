@@ -156,6 +156,7 @@ Author: Shiyao Gu; Jierui Li
 
 - **Example Case 2:** 
   ```python
+  # ==== PDE:  -eps u''(x) + u'(x) = exp(x) ,  u(0)=1, u(1)=0  ====
   def b_fun(x): return torch.ones_like(x)
   def c_fun(x): return torch.zeros_like(x)
   def f_fun(x): return torch.exp(x)
@@ -185,37 +186,17 @@ Author: Shiyao Gu; Jierui Li
 
 - **Example Case 3:** 
   ```python
-  # PDE:  ε y'' + y' + 2e^{-x} = 0   ==>  -ε y'' - y' - 2e^{-x} = 0
-  def b_fun(x): return -torch.ones_like(x)        # b = -1
-  def c_fun(x): return torch.zeros_like(x)        # c = 0
-  def f_fun(x): return 2.0 * torch.exp(-x)        # f = 2 e^{-x}
-
-  def exact_solution(x_np, eps):
-      x = np.asarray(x_np, dtype=np.float64)
-      return 2.0*np.exp(-x) - 2.0*eps*np.exp(-x/eps)
-
-  LAYER_SIDE = 'left'
-
-  BC_LEFT  = ('neumann', 0.0)
-  BC_RIGHT = ('dirichlet', float(2.0*np.exp(-1.0)))
-
-
-  EPS_LIST = [5e-4, 1e-4, 5e-5, 1e-5]
-  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
-  ```
-
-- **Example Case 4:** 
-  ```python
   # PDE:  ε y'' + y' + e^{-x} = 0   ==>  -ε y'' - y' - e^{-x} = 0
   def b_fun(x): return -torch.ones_like(x)        # b = -1
   def c_fun(x): return torch.zeros_like(x)        # c = 0
   def f_fun(x): return 1.0 * torch.exp(-x)        # f = e^{-x}
 
-  def exact_solution_k(x_np, eps, k=1.0):
+  def exact_solution(x_np, eps):
       """
       Exact solution for: -eps*u'' - u' = k*exp(-x),
       with BCs: u'(0)=0, u(1)=k*exp(-1).
       """
+      k=1.0
       x = np.asarray(x_np, dtype=np.float64)
       u = (k / (eps - 1.0)) * (
           eps * (np.exp(-1.0) - np.exp(-1.0/eps))
@@ -237,18 +218,19 @@ Author: Shiyao Gu; Jierui Li
   ```
   
 
-- **Example Case 5:** 
+- **Example Case 4:** 
   ```python
   # PDE:  ε y'' + y' + 2e^{-x} = 0   ==>  -ε y'' - y' - 2e^{-x} = 0
   def b_fun(x): return -torch.ones_like(x)        # b = -1
   def c_fun(x): return torch.zeros_like(x)        # c = 0
   def f_fun(x): return 2.0 * torch.exp(-x)        # f = 2e^{-x}
 
-  def exact_solution_k(x_np, eps, k=2.0):
+  def exact_solution_k(x_np, eps):
       """
       Exact solution for: -eps*u'' - u' = k*exp(-x),
       with BCs: u'(0)=0, u(1)=k*exp(-1).
       """
+      k=2.0
       x = np.asarray(x_np, dtype=np.float64)
       u = (k / (eps - 1.0)) * (
           eps * (np.exp(-1.0) - np.exp(-1.0/eps))
@@ -270,18 +252,19 @@ Author: Shiyao Gu; Jierui Li
   train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
   ```
 
-- **Example Case 6:** 
+- **Example Case 5:** 
   ```python
   # PDE:  ε y'' + y' + 3e^{-x} = 0   ==>  -ε y'' - y' - 3e^{-x} = 0
   def b_fun(x): return -torch.ones_like(x)        # b = -1
   def c_fun(x): return torch.zeros_like(x)        # c = 0
   def f_fun(x): return 3.0 * torch.exp(-x)        # f = 3e^{-x}
 
-  def exact_solution_k(x_np, eps, k=3.0):
+  def exact_solution_k(x_np, eps):
       """
       Exact solution for: -eps*u'' - u' = k*exp(-x),
       with BCs: u'(0)=0, u(1)=k*exp(-1).
       """
+      k=3.0
       x = np.asarray(x_np, dtype=np.float64)
       u = (k / (eps - 1.0)) * (
           eps * (np.exp(-1.0) - np.exp(-1.0/eps))
@@ -302,18 +285,19 @@ Author: Shiyao Gu; Jierui Li
   train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
   ```
 
-- **Example Case 7:** 
+- **Example Case 6:** 
   ```python
-  # PDE:  ε y'' + y' + 3e^{-x} = 0   ==>  -ε y'' - y' - 3e^{-x} = 0
+  # PDE:  ε y'' + y' + 3e^{-x} = 0   ==>  -ε y'' - y' - 4e^{-x} = 0
   def b_fun(x): return -torch.ones_like(x)        # b = -1
   def c_fun(x): return torch.zeros_like(x)        # c = 0
-  def f_fun(x): return 3.0 * torch.exp(-x)        # f = 3e^{-x}
+  def f_fun(x): return 4.0 * torch.exp(-x)        # f = 4e^{-x}
 
-  def exact_solution_k(x_np, eps, k=3.0):
+  def exact_solution_k(x_np, eps):
       """
       Exact solution for: -eps*u'' - u' = k*exp(-x),
       with BCs: u'(0)=0, u(1)=k*exp(-1).
       """
+      k=3.0
       x = np.asarray(x_np, dtype=np.float64)
       u = (k / (eps - 1.0)) * (
           eps * (np.exp(-1.0) - np.exp(-1.0/eps))
@@ -327,7 +311,7 @@ Author: Shiyao Gu; Jierui Li
 
   # Left Neumann (q0=0), Right Dirichlet (β=3e^{-1})
   BC_LEFT  = ('neumann', 0.0)
-  BC_RIGHT = ('dirichlet', float(3.0*np.exp(-1.0)))
+  BC_RIGHT = ('dirichlet', float(4.0*np.exp(-1.0)))
 
   # Your homotopy parameters
   EPS_LIST = [5e-4, 1e-4, 5e-5, 1e-5]
