@@ -119,31 +119,40 @@ Author: Shiyao Gu; Jierui Li
   ---
 - **Example Case 1:** 
   ```python
-  def b_fun(x): return torch.ones_like(x)
-  def c_fun(x): return torch.zeros_like(x)
-  def f_fun(x): return torch.exp(x)
+  # ==== PDE:  -eps u''(x) + u'(x) = 0 ,  u(0)=0, u(1)=1  ====
 
+  # coefficients b(x), c(x), f(x)
+  def b_fun(x): return torch.ones_like(x)      # b(x) = +1
+  def c_fun(x): return torch.zeros_like(x)     # c(x) = 0
+  def f_fun(x): return torch.zeros_like(x)     # f(x) = 0
+
+  # exact solution (stable form; only negative exponentials)
   def exact_solution(x_np, eps):
-      import numpy as np
+      """
+      Exact for: -eps*u'' + u' = 0,  u(0)=0, u(1)=1.
+      u(x) = (e^{x/eps} - 1)/(e^{1/eps} - 1)
+         = [ e^{(x-1)/eps} - e^{-1/eps} ] / [ 1 - e^{-1/eps} ]  (stable)
+      """
       x = np.asarray(x_np, dtype=np.float64)
-      a = 1.0/eps
-
+      a = 1.0 / eps
       # stable ratio R(x) in [0,1]
-      # R(x) = (e^{a x}-1)/(e^{a}-1) = e^{a(x-1)} * (1 - e^{-a x})/(1 - e^{-a})
       exp_neg_a = np.exp(-a)
-      numerator = np.exp(a*(x-1.0)) * (1.0 - np.exp(-a*x))
+      numerator   = np.exp((x - 1.0) * a) - exp_neg_a
       denominator = 1.0 - exp_neg_a
-      R = numerator / denominator
-
-      # compact/stable closed form:
-      # u(x) = [ e^{x} - ε + (ε - e) * R(x) ] / (1 - ε)
-      u = (np.exp(x) - eps + (eps - np.e) * R) / (1.0 - eps)
+      u = numerator / denominator
       return u.astype(np.float64)
-    
-  LAYER_SIDE = 'left'; BC_LEFT = ('dirichlet', 1.0); BC_RIGHT = ('dirichlet', 0.0)
-  EPS_LIST = [5e-2, 1e-2, 5e-3, 1e-3]
-  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
 
+  # ===== Where is the boundary layer?  b>0 ⇒ layer at right (x=1)
+  LAYER_SIDE = 'right'
+
+  # ===== Dirichlet–Dirichlet BCs (use hard encoding)
+  BC_LEFT  = ('dirichlet', 0.0)   # u(0)=0
+  BC_RIGHT = ('dirichlet', 1.0)   # u(1)=1
+  BC_MODE  = 'hard'               
+
+  # ===== Epsilon sweep and call
+  EPS_LIST = [5e-2, 1e-2, 5e-3, 1e-3]   
+  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
   ```
   
 
