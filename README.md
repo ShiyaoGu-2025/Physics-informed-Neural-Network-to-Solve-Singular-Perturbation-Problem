@@ -120,8 +120,6 @@ Author: Shiyao Gu; Jierui Li
 - **Example Case 1:** 
   ```python
   # ==== PDE:  -eps u''(x) + u'(x) = 0 ,  u(0)=0, u(1)=1  ====
-
-  # coefficients b(x), c(x), f(x)
   def b_fun(x): return torch.ones_like(x)      # b(x) = +1
   def c_fun(x): return torch.zeros_like(x)     # c(x) = 0
   def f_fun(x): return torch.zeros_like(x)     # f(x) = 0
@@ -205,3 +203,134 @@ Author: Shiyao Gu; Jierui Li
   EPS_LIST = [5e-4, 1e-4, 5e-5, 1e-5]
   train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
   ```
+
+- **Example Case 4:** 
+  ```python
+  # PDE:  ε y'' + y' + e^{-x} = 0   ==>  -ε y'' - y' - e^{-x} = 0
+  def b_fun(x): return -torch.ones_like(x)        # b = -1
+  def c_fun(x): return torch.zeros_like(x)        # c = 0
+  def f_fun(x): return 1.0 * torch.exp(-x)        # f = e^{-x}
+
+  def exact_solution_k(x_np, eps, k=1.0):
+      """
+      Exact solution for: -eps*u'' - u' = k*exp(-x),
+      with BCs: u'(0)=0, u(1)=k*exp(-1).
+      """
+      x = np.asarray(x_np, dtype=np.float64)
+      u = (k / (eps - 1.0)) * (
+          eps * (np.exp(-1.0) - np.exp(-1.0/eps))
+          + eps * np.exp(-x/eps)
+          - np.exp(-x)
+      )
+      return u.astype(np.float64)
+
+  # Left boundary layer (b<0)
+  LAYER_SIDE = 'left'
+
+  # Left Neumann (q0=0), Right Dirichlet (β=e^{-1})
+  BC_LEFT  = ('neumann', 0.0)
+  BC_RIGHT = ('dirichlet', float(1.0*np.exp(-1.0)))
+
+  # Your homotopy parameters
+  EPS_LIST = [5e-4, 1e-4, 5e-5, 1e-5]
+  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
+  ```
+  
+
+- **Example Case 5:** 
+  ```python
+  # PDE:  ε y'' + y' + 2e^{-x} = 0   ==>  -ε y'' - y' - 2e^{-x} = 0
+  def b_fun(x): return -torch.ones_like(x)        # b = -1
+  def c_fun(x): return torch.zeros_like(x)        # c = 0
+  def f_fun(x): return 2.0 * torch.exp(-x)        # f = 2e^{-x}
+
+  def exact_solution_k(x_np, eps, k=2.0):
+      """
+      Exact solution for: -eps*u'' - u' = k*exp(-x),
+      with BCs: u'(0)=0, u(1)=k*exp(-1).
+      """
+      x = np.asarray(x_np, dtype=np.float64)
+      u = (k / (eps - 1.0)) * (
+          eps * (np.exp(-1.0) - np.exp(-1.0/eps))
+          + eps * np.exp(-x/eps)
+          - np.exp(-x)
+      )
+      return u.astype(np.float64)
+
+
+  # Left boundary layer (b<0)
+  LAYER_SIDE = 'left'
+
+  # Left Neumann (q0=0), Right Dirichlet (β=2e^{-1})
+  BC_LEFT  = ('neumann', 0.0)
+  BC_RIGHT = ('dirichlet', float(2.0*np.exp(-1.0)))
+
+  # Your homotopy parameters
+  EPS_LIST = [5e-4, 1e-4, 5e-5, 1e-5]
+  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
+  ```
+
+- **Example Case 6:** 
+  ```python
+  # PDE:  ε y'' + y' + 3e^{-x} = 0   ==>  -ε y'' - y' - 3e^{-x} = 0
+  def b_fun(x): return -torch.ones_like(x)        # b = -1
+  def c_fun(x): return torch.zeros_like(x)        # c = 0
+  def f_fun(x): return 3.0 * torch.exp(-x)        # f = 3e^{-x}
+
+  def exact_solution_k(x_np, eps, k=3.0):
+      """
+      Exact solution for: -eps*u'' - u' = k*exp(-x),
+      with BCs: u'(0)=0, u(1)=k*exp(-1).
+      """
+      x = np.asarray(x_np, dtype=np.float64)
+      u = (k / (eps - 1.0)) * (
+          eps * (np.exp(-1.0) - np.exp(-1.0/eps))
+          + eps * np.exp(-x/eps)
+          - np.exp(-x)
+      )
+      return u.astype(np.float64)
+
+  # Left boundary layer (b<0)
+  LAYER_SIDE = 'left'
+
+  # Left Neumann (q0=0), Right Dirichlet (β=3e^{-1})
+  BC_LEFT  = ('neumann', 0.0)
+  BC_RIGHT = ('dirichlet', float(3.0*np.exp(-1.0)))
+
+  # Your homotopy parameters
+  EPS_LIST = [5e-4, 1e-4, 5e-5, 1e-5]
+  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
+  ```
+
+- **Example Case 7:** 
+  ```python
+  # PDE:  ε y'' + y' + 3e^{-x} = 0   ==>  -ε y'' - y' - 3e^{-x} = 0
+  def b_fun(x): return -torch.ones_like(x)        # b = -1
+  def c_fun(x): return torch.zeros_like(x)        # c = 0
+  def f_fun(x): return 3.0 * torch.exp(-x)        # f = 3e^{-x}
+
+  def exact_solution_k(x_np, eps, k=3.0):
+      """
+      Exact solution for: -eps*u'' - u' = k*exp(-x),
+      with BCs: u'(0)=0, u(1)=k*exp(-1).
+      """
+      x = np.asarray(x_np, dtype=np.float64)
+      u = (k / (eps - 1.0)) * (
+          eps * (np.exp(-1.0) - np.exp(-1.0/eps))
+          + eps * np.exp(-x/eps)
+          - np.exp(-x)
+      )
+      return u.astype(np.float64)
+
+  # Left boundary layer (b<0)
+  LAYER_SIDE = 'left'
+
+  # Left Neumann (q0=0), Right Dirichlet (β=3e^{-1})
+  BC_LEFT  = ('neumann', 0.0)
+  BC_RIGHT = ('dirichlet', float(3.0*np.exp(-1.0)))
+
+  # Your homotopy parameters
+  EPS_LIST = [5e-4, 1e-4, 5e-5, 1e-5]
+  train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
+  ```
+  
