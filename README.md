@@ -225,7 +225,7 @@ Author: Shiyao Gu; Jierui Li
   def c_fun(x): return torch.zeros_like(x)        # c = 0
   def f_fun(x): return 2.0 * torch.exp(-x)        # f = 2e^{-x}
 
-  def exact_solution_k(x_np, eps):
+  def exact_solution(x_np, eps):
       """
       Exact solution for: -eps*u'' - u' = k*exp(-x),
       with BCs: u'(0)=0, u(1)=k*exp(-1).
@@ -259,7 +259,7 @@ Author: Shiyao Gu; Jierui Li
   def c_fun(x): return torch.zeros_like(x)        # c = 0
   def f_fun(x): return 3.0 * torch.exp(-x)        # f = 3e^{-x}
 
-  def exact_solution_k(x_np, eps):
+  def exact_solution(x_np, eps):
       """
       Exact solution for: -eps*u'' - u' = k*exp(-x),
       with BCs: u'(0)=0, u(1)=k*exp(-1).
@@ -292,7 +292,7 @@ Author: Shiyao Gu; Jierui Li
   def c_fun(x): return torch.zeros_like(x)        # c = 0
   def f_fun(x): return 4.0 * torch.exp(-x)        # f = 4e^{-x}
 
-  def exact_solution_k(x_np, eps):
+  def exact_solution(x_np, eps):
       """
       Exact solution for: -eps*u'' - u' = k*exp(-x),
       with BCs: u'(0)=0, u(1)=k*exp(-1).
