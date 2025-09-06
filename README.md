@@ -156,7 +156,7 @@ Author: Shiyao Gu; Jierui Li
 
 - **Example Case 2:** 
   ```python
-   # PDE:  -ε u'' + u' = 2e^{-x} 
+  # PDE:  -ε u'' + u' = 2e^{-x} 
   def b_fun(x): return torch.ones_like(x)
   def c_fun(x): return torch.zeros_like(x)
   def f_fun(x): return 2.0 * torch.exp(-x)
