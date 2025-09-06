@@ -88,7 +88,7 @@ Author: Shiyao Gu; Jierui Li
   tau, eta_phi = 0.1, 1e-4
   ```
 
-- **`lam_pde, lam_phi`** — Weights for PDE residual and \(\phi\)-regularization terms.
+- **`lam_pde, lam_phi`** — Weights for PDE residual and $\phi$-regularization terms.
   ```python
   lam_pde, lam_phi = 1.0, 0.01
   ```
