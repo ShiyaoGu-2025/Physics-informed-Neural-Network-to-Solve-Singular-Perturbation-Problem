@@ -178,7 +178,7 @@ Author: Shiyao Gu; Jierui Li
       u = (np.exp(x) - eps + (eps - np.e) * R) / (1.0 - eps)
       return u.astype(np.float64)
     
-  LAYER_SIDE = 'left'; BC_LEFT = ('dirichlet', 1.0); BC_RIGHT = ('dirichlet', 0.0)
+  LAYER_SIDE = 'right'; BC_LEFT = ('dirichlet', 1.0); BC_RIGHT = ('dirichlet', 0.0)
   EPS_LIST = [5e-2, 1e-2, 5e-3, 1e-3]
   train(EPS_LIST, layer_side=LAYER_SIDE, bc_left=BC_LEFT, bc_right=BC_RIGHT)
 
